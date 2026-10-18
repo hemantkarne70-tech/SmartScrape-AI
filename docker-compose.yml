@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,backend"
+      FRONTEND_ORIGIN: "http://localhost:5173"
+    volumes:
+      - ./backend:/app
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py run_scheduler
+    environment:
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,backend"
+      FRONTEND_ORIGIN: "http://localhost:5173"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - backend
+  frontend:
+    image: node:20-alpine
+    working_dir: /workspace
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: "http://localhost:8000/api"
+    volumes:
+      - ./frontend:/workspace
+      - frontend_node_modules:/workspace/node_modules
+    depends_on:
+      - backend
+volumes:
+  frontend_node_modules:
