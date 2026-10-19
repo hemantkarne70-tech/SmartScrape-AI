@@ -128,7 +128,7 @@ function App() {
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState(null)
   const [search, setSearch] = useState('')
-  const [url, setUrl] = useState('https://example.com')
+  const [url, setUrl] = useState('')
   const [jobName, setJobName] = useState('Example homepage')
   const [selectorText, setSelectorText] = useState(initialSelectors)
   const [schedule, setSchedule] = useState('manual')
